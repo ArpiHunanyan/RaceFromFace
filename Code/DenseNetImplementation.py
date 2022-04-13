@@ -8,7 +8,7 @@ from tensorflow.keras.applications import DenseNet121
 from tensorflow.keras import Input, Model
 from tensorflow.keras.layers import GlobalAveragePooling2D, Dense
 from tensorflow.keras.optimizers import Adam
-# pip install keras==2.7.0
+
 
 class DenceNetClassifier:
 
