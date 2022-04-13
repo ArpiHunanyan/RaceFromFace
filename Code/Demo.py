@@ -7,15 +7,14 @@ import json
 
 
 train_data, train_labels = getTrain()
-#validation_data, validation_labels = getValidation()
-
+validation_data = getValidation()
 
 model = DenceNetClassifier()
 model.compile()
 print()
-## Train the top layer (for classifaction) 
+# ## Train the top layer (for classifaction) 
 print("Training the top layer (for classifaction) ")
-trainingFirst = model.fit(x = train_data, y = train_labels,  epochs = 1, validation_data = getValidation())
+trainingFirst = model.fit(x = train_data, y = train_labels,  epochs = 1, validation_data = validation_data)
 
   
 with open('trainingFirst', 'w') as convert_file:
@@ -29,11 +28,10 @@ print()
 ## Fine - Tuning
 print("Fine - Tuning ")
 model.setTrainable(True)
-print(type(trainingFirst))
 model.compile(optimizer = keras.optimizers.Adam(1e-5))
 
 # #model
-trainingSecond = model.fit(x = train_data, y = train_labels,  epochs =  1, validation_data = getValidation())
+trainingSecond = model.fit(x = train_data, y = train_labels,  epochs =  1, validation_data = validation_data)
 
 with open('trainingSecond', 'w') as convert_file:
      convert_file.write(json.dumps(trainingSecond.history))
