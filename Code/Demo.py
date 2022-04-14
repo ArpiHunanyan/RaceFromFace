@@ -14,7 +14,7 @@ model.compile()
 print()
 # ## Train the top layer (for classifaction) 
 print("Training the top layer (for classifaction) ")
-trainingFirst = model.fit(x = train_data, y = train_labels,  epochs = 1, validation_data = validation_data)
+trainingFirst = model.fit(x = train_data, y = train_labels,  epochs = 30, validation_data = validation_data)
 
   
 with open('trainingFirst', 'w') as convert_file:
@@ -31,7 +31,7 @@ model.setTrainable(True)
 model.compile(optimizer = keras.optimizers.Adam(1e-5))
 
 # #model
-trainingSecond = model.fit(x = train_data, y = train_labels,  epochs =  1, validation_data = validation_data)
+trainingSecond = model.fit(x = train_data, y = train_labels,  epochs =  15, validation_data = validation_data)
 
 with open('trainingSecond', 'w') as convert_file:
      convert_file.write(json.dumps(trainingSecond.history))
