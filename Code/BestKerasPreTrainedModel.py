@@ -8,10 +8,6 @@ from tqdm import tqdm
 from  DataPreparation import getValidation, getTrain
 from tensorflow.keras.applications import DenseNet201
 
-base_model = DenseNet201(include_top = False,
-                                      weights = 'imagenet', # pre-training on ImageNet
-                                      input_shape = (224, 224, 3)
-        )
 
 # Set batch size for training and validation
 batch_size = 32
