@@ -1,4 +1,4 @@
-"# Imports
+import sys
 import tensorflow as tf
 # import tensorflow_datasets as tfds
 import pandas as pd
@@ -10,7 +10,7 @@ from tensorflow.keras.applications import DenseNet201
 
 
 # Set batch size for training and validation
-batch_size = 32
+batch_size = 18
 
 
 # List all available models
@@ -20,8 +20,8 @@ model_dictionary = {m[0]:m[1] for m in inspect.getmembers(tf.keras.applications,
 # Download the training and validation data
 # (train, validation), metadata = tfds.load('cats_vs_dogs', split=['train[:70%]', 'train[70%:]'], with_info=True, as_supervised=True)
 
-train, y_train =  getTrain(M = 32)
-validation, y_validation =  getValidation(M = 32)
+train, y_train =  getTrain(M = 18)
+validation, y_validation =  getValidation(M = 17)
 # Number of training examples and labels
 num_train = len(list(train))
 num_validation = len(list(validation))
@@ -44,13 +44,16 @@ def normalize_img(image, label, img_size):
     
     
 # Run preprocessing
-train_processed_224 = normalize_img(train, y_train, (224,224))
-validation_processed_224 = normalize_img(validation, y_validation, (224,224))
-train_processed_331 = normalize_img(train, y_train, (331,331))
-validation_processed_331 = normalize_img(validation, y_validation, (331,331))
+# train_processed_224 = normalize_img(train, y_train, (224,224))
+# validation_processed_224 = normalize_img(validation, y_validation, (224,224))
+# train_processed_331 = normalize_img(train, y_train, (331,331))
+# validation_processed_331 = normalize_img(validation, y_validation, (331,331))
+
+train_processed_224 = train, y_train
+validation_processed_224 = validation, y_validation
 
 
-
+#sys.exit(0)
 # Loop over each model available in Keras
 model_benchmarks = {'model_name': [], 'num_model_params': [], 'validation_accuracy': []}
 
@@ -64,6 +67,7 @@ for model_name, model in tqdm(model_dictionary.items()):
     print("------------------------------------------------")
     # Special handling for "NASNetLarge" since it requires input images with size (331,331)
     if 'NASNetLarge' in model_name:
+        continue 
         input_shape=(331,331,3)
         train_processed = train_processed_331
         validation_processed = validation_processed_331
@@ -88,7 +92,7 @@ for model_name, model in tqdm(model_dictionary.items()):
 #     clf_model.add(pre_trained_model)
 #     clf_model.add(tf.keras.layers.Dense(num_classes, activation='softmax'))
     clf_model.compile(loss='categorical_crossentropy', metrics=['accuracy'])
-    history = clf_model.fit(train_processed[0], train_processed[1], epochs=3, validation_data = validation_processed, steps_per_epoch=num_iterations)
+    history = clf_model.fit(train_processed[0], train_processed[1], epochs=1, validation_data = validation_processed, steps_per_epoch=num_iterations)
     
     # Calculate all relevant metrics
     model_benchmarks['model_name'].append(model_name)
@@ -107,18 +111,17 @@ benchmark_df.to_csv('benchmark_df.csv', index=False)
 benchmark_df
 
 
-# Loop over each row and plot the num_model_params vs validation_accuracy
-markers=[".",",","o","v","^","<",">","1","2","3","4","8","s","p","P","*","h","H","+","x","X","D","d","|","_",4,5,6,7,8,9,10,11]
-plt.figure(figsize=(7,5))
+# # Loop over each row and plot the num_model_params vs validation_accuracy
+# markers=[".",",","o","v","^","<",">","1","2","3","4","8","s","p","P","*","h","H","+","x","X","D","d","|","_",4,5,6,7,8,9,10,11]
+# plt.figure(figsize=(7,5))
 
-for row in benchmark_df.itertuples():
-    plt.scatter(row.num_model_params, row.validation_accuracy, label=row.model_name, marker=markers[row.Index], s=150, linewidths=2)
+# for row in benchmark_df.itertuples():
+#     plt.scatter(row.num_model_params, row.validation_accuracy, label=row.model_name, marker=markers[row.Index], s=150, linewidths=2)
     
-plt.xscale('log')
-plt.xlabel('Number of Parameters in Model')
-plt.ylabel('Validation Accuracy after 3 Epochs')
-plt.title('Accuracy vs Model Size')
+# plt.xscale('log')
+# plt.xlabel('Number of Parameters in Model')
+# plt.ylabel('Validation Accuracy after 3 Epochs')
+# plt.title('Accuracy vs Model Size')
 
-# Move legend out of the plot
-plt.legend(bbox_to_anchor=(1, 1), loc='upper left');
-"
+# # Move legend out of the plot
+# plt.legend(bbox_to_anchor=(1, 1), loc='upper left');
