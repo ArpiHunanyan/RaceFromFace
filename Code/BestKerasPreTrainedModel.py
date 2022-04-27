@@ -20,8 +20,8 @@ model_dictionary = {m[0]:m[1] for m in inspect.getmembers(tf.keras.applications,
 # Download the training and validation data
 # (train, validation), metadata = tfds.load('cats_vs_dogs', split=['train[:70%]', 'train[70%:]'], with_info=True, as_supervised=True)
 
-train, y_train =  getTrain(M = 18)
-validation, y_validation =  getValidation(M = 17)
+train, y_train =  getTrain(tensor = True)
+validation, y_validation =  getValidation(tensor = True)
 # Number of training examples and labels
 num_train = len(list(train))
 num_validation = len(list(validation))
@@ -92,7 +92,7 @@ for model_name, model in tqdm(model_dictionary.items()):
 #     clf_model.add(pre_trained_model)
 #     clf_model.add(tf.keras.layers.Dense(num_classes, activation='softmax'))
     clf_model.compile(loss='categorical_crossentropy', metrics=['accuracy'])
-    history = clf_model.fit(train_processed[0], train_processed[1], epochs=1, validation_data = validation_processed, steps_per_epoch=num_iterations)
+    history = clf_model.fit(train_processed[0], train_processed[1], epochs = 3, validation_data = validation_processed, steps_per_epoch=num_iterations)
     
     # Calculate all relevant metrics
     model_benchmarks['model_name'].append(model_name)
