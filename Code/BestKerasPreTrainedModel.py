@@ -10,7 +10,7 @@ from tensorflow.keras.applications import DenseNet201
 
 
 # Set batch size for training and validation
-batch_size = 18
+batch_size = 16
 
 
 # List all available models
@@ -20,11 +20,11 @@ model_dictionary = {m[0]:m[1] for m in inspect.getmembers(tf.keras.applications,
 # Download the training and validation data
 # (train, validation), metadata = tfds.load('cats_vs_dogs', split=['train[:70%]', 'train[70%:]'], with_info=True, as_supervised=True)
 
-train, y_train =  getTrain(tensor = True)
-validation, y_validation =  getValidation(tensor = True)
+train_data =  getTrain(tensor = True)
+validation_data =  getValidation(tensor = True)
 # Number of training examples and labels
-num_train = len(list(train))
-num_validation = len(list(validation))
+num_train = 86744 #len(list(train))
+num_validation = 10954 #len(list(validation))
 num_classes = 7
 num_iterations = int(num_train/batch_size)
 
@@ -49,8 +49,8 @@ def normalize_img(image, label, img_size):
 # train_processed_331 = normalize_img(train, y_train, (331,331))
 # validation_processed_331 = normalize_img(validation, y_validation, (331,331))
 
-train_processed_224 = train, y_train
-validation_processed_224 = validation, y_validation
+train_processed_224 = train_data # train, y_train
+validation_processed_224 = validation_data # validation, y_validation
 
 
 #sys.exit(0)
@@ -92,7 +92,7 @@ for model_name, model in tqdm(model_dictionary.items()):
 #     clf_model.add(pre_trained_model)
 #     clf_model.add(tf.keras.layers.Dense(num_classes, activation='softmax'))
     clf_model.compile(loss='categorical_crossentropy', metrics=['accuracy'])
-    history = clf_model.fit(train_processed[0], train_processed[1], epochs = 3, validation_data = validation_processed, steps_per_epoch=num_iterations)
+    history = clf_model.fit(train_processed, epochs = 3, validation_data = validation_processed, steps_per_epoch=num_iterations)
     
     # Calculate all relevant metrics
     model_benchmarks['model_name'].append(model_name)
