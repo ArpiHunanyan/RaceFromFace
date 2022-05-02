@@ -55,7 +55,7 @@ class Classifier:
 
 
 
-    def compile(self, optimizer = Adam(), metrics = ['accuracy',  'Recall', SpecificityAtSensitivity(sensitivity = 0.5)] ):
+    def compile(self, optimizer = Adam(), metrics = ['accuracy',  'Recall', 'Precision',  SpecificityAtSensitivity(sensitivity = 0.5)] ):
         self.model.compile(optimizer = optimizer,
                           loss = 'categorical_crossentropy',
                           metrics = metrics
