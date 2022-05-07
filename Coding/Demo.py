@@ -28,7 +28,7 @@ tarin_data = getTrain()
 validation_data  = getValidation()
 
 
-model = Classifier(modelName = EfficientNetV2L) #set pre-traind's layers freazed 
+model = Classifier(modelName = "EfficientNetV2L") #set pre-traind's layers freazed 
 
 
 model.unfreazeLastLayers(unfreezeedLayersTraining)  # 10 layer 
