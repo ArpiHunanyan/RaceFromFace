@@ -1,9 +1,10 @@
+from inspect import trace
 import pandas as pd
 import matplotlib.pyplot as plt
 
 class Plot:
     
-    def __init__(self, path = 'benchmark_df.csv'):
+    def __init__(self, path = 'Results/benchmark_df_topLayer.csv'):
         self.benchmark_df = pd.read_csv(path)
 
     def metricBar (self, x = "accuracy"):
@@ -37,8 +38,8 @@ class Plot:
                 alpha = 0.2)
 
 
-        plt.xlabel('Models')
-        plt.ylabel('Validation ' + name)
+        plt.xlabel( name )
+        plt.ylabel('Models')
         plt.title("Validation " +  name + "after 3 Epochs with Freezed the convolutional base.")
         plt.legend(bbox_to_anchor=(1, 1), loc='upper left');
         plt.show()
@@ -58,6 +59,25 @@ class Plot:
             plt.title('Accuracy vs Model Size')
             plt.legend(bbox_to_anchor=(1, 1), loc='upper left');
             plt.show()
+
+
+    def plotResaluts(path = "Results/trainingResults_efficientnetv2_1", critaria = "accuracy"): 
+
+        with open("Results/trainingResults_efficientnetv2_1", 'r') as training:
+            training = eval(training.read().splitlines()[0])
+
+
+        plt.plot(training[critaria],  label = 'training')
+        plt.plot(training["val_" + critaria], label = 'validatin') # shows overfitting
+
+        plt.grid(color = 'grey', linewidth = 0.5, linestyle = '-.', alpha = 0.2, b = True)
+        plt.xlabel(critaria)
+        plt.ylabel("score")
+
+        plt.legend();
+        plt.title(label = "Trainig " + critaria + " vs Validation " + critaria , pad = 30)
+        plt.show() 
+
 
 
     
