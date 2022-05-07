@@ -2,6 +2,7 @@
 # Created: 1 May,2022, 8:00 PM
 # Email: arpi_hunanyan@edu.aua.am
 
+from unicodedata import name
 from tensorflow import keras
 
 from  DataPreparation import getValidation, getTrain
@@ -27,7 +28,7 @@ tarin_data = getTrain()
 validation_data  = getValidation()
 
 
-model = Classifier() #set pre-traind's layers freazed 
+model = Classifier(modelName = EfficientNetV2L) #set pre-traind's layers freazed 
 
 
 model.unfreazeLastLayers(unfreezeedLayersTraining)  # 10 layer 
