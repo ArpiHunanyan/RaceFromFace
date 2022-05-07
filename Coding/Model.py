@@ -47,7 +47,7 @@ class Classifier:
         self.base_model.trainable = False
 
         # Create a new model on top of the output of one (or several) layers from the base model.
-        input_tensor = Input(shape = self.input_shape, name = "InputFaceImg")
+        input_tensor = Input(shape = self.input_shape, name = "InputFace")
         base_output_tensor = self.base_model(input_tensor, training = True)
         pooled_output_tensor = GlobalAveragePooling2D(name = "PooledOutput")(base_output_tensor)
         output_tensor = Dense(self.classes,  activation = "softmax", name = "OutputClass")(pooled_output_tensor)
