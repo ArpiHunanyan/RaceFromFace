@@ -6,3 +6,4 @@ PIL==8.4.0
 matplotlib==3.5.0
 sklearn==1.0.1
 json==2.0.9
+scikit-image==0.19.2
