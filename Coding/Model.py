@@ -3,13 +3,12 @@
 # Email: arpi_hunanyan@edu.aua.am
 
 
-
-
 from tensorflow.keras import applications
 from tensorflow.keras import Input, Model 
 from tensorflow.keras.layers import GlobalAveragePooling2D, Dense
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.metrics import SpecificityAtSensitivity
+from tensorflow.keras.models import load_model
 import inspect
 
 
@@ -20,38 +19,39 @@ class Classifier:
 
 
 
-    def __init__(self, input_shape = (224, 224, 3), classes = 7, modelName = "DenseNet121"):
-
-        '''Constructs a new DenceNetClassifier.
-           Besides the top layer, all other layers are not trainable. 
-
-      
-            # Arguments 
-               input_shape: optional shape tuple, defold (224, 224, 3)
-               classes: optional number of classes to classify images into, defold 7
-
-        '''
-
-   
-
+    def __init__(self, input_shape = (224, 224, 3), classes = 7, modelName = "DenseNet121", createModel = True, path = None):
+        
         self.input_shape = input_shape
         self.classes = classes
         self.modelName = modelName
+
+        if (createModel):
+            # Instantiate a base model and load pre-trained weights into it.
+            self.base_model = eval("applications." + self.modelName)(include_top = False,
+                                                                weights = 'imagenet', # pre-training on ImageNet
+                                                                input_shape = self.input_shape                                     
+                                                                )
+
+            # Freeze all layers in the base model 
+            self.base_model.trainable = False
+
+            # Create a new model on top of the output of one (or several) layers from the base model.
+            input_tensor = Input(shape = self.input_shape, name = "input_face")
+            base_output_tensor = self.base_model(input_tensor, training = True ) #"pre_traind_model"
+            pooled_output_tensor = GlobalAveragePooling2D(name = "pooled_output")(base_output_tensor)
+            output_tensor = Dense(self.classes,  activation = "softmax", name = "output_class")(pooled_output_tensor)
+            self.model = Model(input_tensor, output_tensor, name = self.modelName )
     
-        # Instantiate a base model and load pre-trained weights into it.
-        self.base_model = eval("applications." + modelName)(include_top = False,
-                                      weights = 'imagenet', # pre-training on ImageNet
-                                      input_shape = self.input_shape)
 
-        # Freeze all layers in the base model 
-        self.base_model.trainable = False
 
-        # Create a new model on top of the output of one (or several) layers from the base model.
-        input_tensor = Input(shape = self.input_shape, name = "InputFace")
-        base_output_tensor = self.base_model(input_tensor, training = True)
-        pooled_output_tensor = GlobalAveragePooling2D(name = "PooledOutput")(base_output_tensor)
-        output_tensor = Dense(self.classes,  activation = "softmax", name = "OutputClass")(pooled_output_tensor)
-        self.model = Model(input_tensor, output_tensor, name = modelName)
+        else :
+            self.model = load_model(path)
+            self.base_model = self.model.get_layer('efficientnetb0')
+            self.base_model.trainable = False
+
+
+        
+
 
 
 
@@ -86,6 +86,10 @@ class Classifier:
     def baseModelParamsCount(self):
         return self.base_model.count_params()
 
+    def baseModelLayersCount(self):
+        return len(self.base_model.layers)
+
+
     def setTrainable (self, trainable = False):
         self.base_model.trainable = trainable
     
@@ -119,10 +123,24 @@ class Classifier:
         self.model.save(path)
         print("Model is succesfuly saved in ", path, ".")
 
+    def evaluate(self, x_test, y_test,  batch_size = 16):
+       self.model.evaluate( x_test, y_test, batch_size) # use_multiprocessing = True
+     
+
+    
+
+
+    
+  
+        
+
 
 
 def kerasModelNames():
         return  [m[0] for m in inspect.getmembers(applications, inspect.isfunction)]
+
+
+    
 
 
 
