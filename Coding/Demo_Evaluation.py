@@ -2,13 +2,37 @@ from numpy import matrix
 from tensorflow import keras
 from  DataPreparation import getValidation
 from Model import Classifier
+import json
+
+print()
+print("Set Up")
+print()
+
+# set up
+modelName = "ResNet50"
 
 
-validation_data  = getValidation(masked = True)
+print("modelName: ", modelName)
 
-model = keras.models.load_model('Model')
-print("Evaluate:")
-results = model.evaluate(validation_data, batch_size = 16)
+print()
+print("Data Preperation")
+print()
+validation_data  = getValidation( masked = True)
+
+print()
+print("Evaluations")
+print()
+model = Classifier(createModel = False, path = "Model/TrainedModel" + modelName) 
+# results = model.evaluate(validation)
+
+
+results = model.evaluate(validation_data)
+
+with open('Results/evaluationMasks' + modelName, 'w') as convert_file:
+     convert_file.write(json.dumps(results.history))
+print()
+print("History is suuccsesfuly saved.")
+print()
 
 matric = ['loss', 'accuracy',  'Recall', 'Precision',  'SpecificityAtSensitivity']
 
