@@ -1,22 +1,34 @@
 # # Author: ArpiHunanyan
-# # Created: 1 May,2022, 8:00 PM
+# # Created: 14 May,2022, 9:00 PM
 # # Email: arpi_hunanyan@edu.aua.am
 
-from importlib.resources import path
-import sys
-from unicodedata import name
 from tensorflow import keras
-
 from  DataPreparation import getValidation, getTrain
 from Model import Classifier
+import sys
 import json
 import os
 
 
 
 
-# # set up
+########################################### set up
 modelName = "MobileNetV3Large"
+
+valMask = False
+trainMask = False
+
+# # ## training
+# # unfreezeedLayersTraining = 10 # 10 from pre-traind model + classification layer
+# # learningRateTrainig = 0.001
+# # epochsTraining = 1
+
+# ## tuning
+learningRateFineTuning = 1e-7
+epochsFineTuning = 30
+
+########################################### set up
+
 path_model = "Model/" + "new"+ modelName
 path_results = "Results/" + "new" + modelName 
 
@@ -35,30 +47,17 @@ if os.path.exists(path_results) :
 os.mkdir(path_model)
 os.mkdir(path_results)
 
-# # ## training
-# # unfreezeedLayersTraining = 10 # 10 from pre-traind model + classification layer
-# # learningRateTrainig = 0.001
-# # epochsTraining = 1
-
-# ## tuning
-learningRateFineTuning = 1e-7
-epochsFineTuning = 30
-model = Classifier( modelName = modelName , createModel = False, path = "Model/3.ModelMobileNetV3Large/TunedModel")
-
-
-
 
 print()
 print("Data Preperation")
 print()
 
-valMask = False
-trainMask = False
-tarin_data = getTrain(  masked = valMask)
-validation_data  = getValidation(masked = trainMask )
 
+tarin_data = getTrain( masked = valMask)
+validation_data  = getValidation( masked = trainMask )
 
-model = Classifier( modelName = modelName, path = "Model/TrainedModel" + modelName ) #set pre-traind's layers freazed 
+model = Classifier( modelName = modelName , createModel = False, path = "Model/3.ModelMobileNetV3Large/Tuning")
+# model = Classifier( modelName = modelName, path = "Model/TrainedModel" + modelName ) #set pre-traind's layers freazed 
 
 # ----------------------------------------------------------------------------------: Training
 
@@ -90,7 +89,7 @@ print("Fine - Tuning ")
 print()
 
 model.setTrainable(True)
-model.compile(optimizer = keras.optimizers.Adam(learningRateFineTuning)) # 1e-5 => 1e-7
+model.compile(optimizer = keras.optimizers.Adam(learningRateFineTuning)) 
 
 print()
 
