@@ -42,7 +42,7 @@ os.mkdir(path_results)
 
 # ## tuning
 learningRateFineTuning = 1e-7
-epochsFineTuning = 1
+epochsFineTuning = 30
 model = Classifier( modelName = modelName , createModel = False, path = "Model/3.ModelMobileNetV3Large/TunedModel")
 
 
@@ -54,8 +54,8 @@ print()
 
 valMask = False
 trainMask = False
-tarin_data = getTrain(18,  masked = valMask)
-validation_data  = getValidation(18, masked = trainMask )
+tarin_data = getTrain(  masked = valMask)
+validation_data  = getValidation(masked = trainMask )
 
 
 model = Classifier( modelName = modelName, path = "Model/TrainedModel" + modelName ) #set pre-traind's layers freazed 
