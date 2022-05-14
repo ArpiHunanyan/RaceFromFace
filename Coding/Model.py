@@ -19,7 +19,7 @@ class Classifier:
 
 
 
-    def __init__(self, input_shape = (224, 224, 3), classes = 7, modelName = "DenseNet121", createModel = True, path = None):
+    def __init__(self, input_shape = (224, 224, 3), classes = 7, modelName = None, createModel = True, path = None):
         
         self.input_shape = input_shape
         self.classes = classes
@@ -46,7 +46,7 @@ class Classifier:
 
         else :
             self.model = load_model(path)
-            self.base_model = self.model.get_layer('efficientnetb0')
+            self.base_model = self.model.layers[1]
             self.base_model.trainable = False
 
 
@@ -123,8 +123,8 @@ class Classifier:
         self.model.save(path)
         print("Model is succesfuly saved in ", path, ".")
 
-    def evaluate(self, x_test, y_test,  batch_size = 16):
-       self.model.evaluate( x_test, y_test, batch_size) # use_multiprocessing = True
+    def evaluate(self, data,   batch_size = 16):
+       self.model.evaluate( data) # use_multiprocessing = True
      
 
     
