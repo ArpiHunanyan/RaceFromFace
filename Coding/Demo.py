@@ -14,7 +14,7 @@ import os
 
 ########################################### set up
 modelName = "MobileNetV3Large"
-path_running_model = "Model/newMobileNetV3Large/Tuning"
+path_running_model = "Model/newMobileNetV3LargeMasked/Tuning"
 
 trainMask = True
 valMask = trainMask
@@ -29,7 +29,7 @@ valM = 10954
 # epochsTraining = 1
 
 # tuning
-learningRateFineTuning = 1e-7
+learningRateFineTuning = 1e-3
 epochsFineTuning = 30
 
 
@@ -38,8 +38,8 @@ epochsFineTuning = 30
 ########################################### set up
 MaskFlag = "Masked" if trainMask else ""
 
-path_model = "Model/" + "new"+ modelName + MaskFlag
-path_results = "Results/" + "new" + modelName + MaskFlag
+path_model = "Model/" + "new2"+ modelName + MaskFlag
+path_results = "Results/" + "new2" + modelName + MaskFlag
 
 if os.path.exists(path_model) :
      print()
