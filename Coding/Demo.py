@@ -14,23 +14,32 @@ import os
 
 ########################################### set up
 modelName = "MobileNetV3Large"
+path_running_model = "Model/newMobileNetV3Large/Tuning"
 
-valMask = False
-trainMask = False
+trainMask = True
+valMask = trainMask
 
-# # ## training
-# # unfreezeedLayersTraining = 10 # 10 from pre-traind model + classification layer
-# # learningRateTrainig = 0.001
-# # epochsTraining = 1
 
-# ## tuning
+trainM = 18 #86744
+valM = 18  #10954
+
+# # training
+# unfreezeedLayersTraining = 10 # 10 from pre-traind model + classification layer
+# learningRateTrainig = 0.001
+# epochsTraining = 1
+
+# tuning
 learningRateFineTuning = 1e-7
-epochsFineTuning = 30
+epochsFineTuning = 1 #30
+
+
+
 
 ########################################### set up
+MaskFlag = "Masked" if trainMask else ""
 
-path_model = "Model/" + "new"+ modelName
-path_results = "Results/" + "new" + modelName 
+path_model = "Model/" + "new"+ modelName + MaskFlag
+path_results = "Results/" + "new" + modelName + MaskFlag
 
 if os.path.exists(path_model) :
      print()
@@ -53,10 +62,10 @@ print("Data Preperation")
 print()
 
 
-tarin_data = getTrain( masked = valMask)
-validation_data  = getValidation( masked = trainMask )
+tarin_data = getTrain( M = trainM, masked = trainMask )
+validation_data  = getValidation( M = valM, masked =  valMask)
 
-model = Classifier( modelName = modelName , createModel = False, path = "Model/3.ModelMobileNetV3Large/Tuning")
+model = Classifier( modelName = modelName , createModel = False, path = path_running_model)
 # model = Classifier( modelName = modelName, path = "Model/TrainedModel" + modelName ) #set pre-traind's layers freazed 
 
 # ----------------------------------------------------------------------------------: Training
