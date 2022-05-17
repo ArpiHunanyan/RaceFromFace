@@ -30,7 +30,7 @@ valM = 10954
 
 # tuning
 learningRateFineTuning = 1e-3
-epochsFineTuning = 30
+epochsFineTuning = 200
 
 
 
