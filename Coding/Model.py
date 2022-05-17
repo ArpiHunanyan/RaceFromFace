@@ -1,8 +1,10 @@
 # Author: ArpiHunanyan
-# Created: 29 April,2022, 14:58 PM
+# Created: 16 May, 2022
 # Email: arpi_hunanyan@edu.aua.am
 
 
+from calendar import EPOCH
+from tkinter import N
 from tensorflow.keras import applications
 from tensorflow.keras import Input, Model 
 from tensorflow.keras.layers import GlobalAveragePooling2D, Dense
@@ -13,13 +15,12 @@ import inspect
 
 
 
-
-
 class Classifier:
 
 
 
     def __init__(self, input_shape = (224, 224, 3), classes = 7, modelName = None, createModel = True, path = None):
+        """Inatializ the CNN model with pre-trained Keras application"""
         
         self.input_shape = input_shape
         self.classes = classes
@@ -37,7 +38,7 @@ class Classifier:
 
             # Create a new model on top of the output of one (or several) layers from the base model.
             input_tensor = Input(shape = self.input_shape, name = "input_face")
-            base_output_tensor = self.base_model(input_tensor, training = True ) #"pre_traind_model"
+            base_output_tensor = self.base_model(input_tensor, training = False ) #"pre_traind_model"
             pooled_output_tensor = GlobalAveragePooling2D(name = "pooled_output")(base_output_tensor)
             output_tensor = Dense(self.classes,  activation = "softmax", name = "output_class")(pooled_output_tensor)
             self.model = Model(input_tensor, output_tensor, name = self.modelName )
@@ -45,6 +46,7 @@ class Classifier:
 
 
         else :
+            # Load model in the path
             self.model = load_model(path)
             self.base_model = self.model.layers[1]
             self.base_model.trainable = False
@@ -56,6 +58,9 @@ class Classifier:
 
 
     def compile(self, optimizer = Adam(), metrics = ['accuracy',  'Recall', 'Precision',  SpecificityAtSensitivity(sensitivity = 0.5)] ):
+
+        """ Compiles the model with the specific argumantes."""
+
         self.model.compile(optimizer = optimizer,
                           loss = 'categorical_crossentropy',
                           metrics = metrics
@@ -64,17 +69,8 @@ class Classifier:
 
     def fit(self, x = None, y = None, batch_size = 16, epochs = 1, validation_data = None, callbacks = None):
 
-        '''Trains the model for a fixed number of epochs (iterations on a dataset).
-           # Arguments
-            x: Input data
-            y: Target data
-            batch_size: Integer or None.
-            epochs: Integer
-            validation_data: Data on which to evaluate the loss and any model metrics at the end of each epoch.
-        
-          # Returns
-            A History object. Its History.history attribute is a record of training loss values and metrics values at successive epochs, as well as validation loss values and validation metrics values (if applicable).
-        '''
+        """ Train the model with spesifice arguments. Returns the genaratied metrics and loss for each epoch."""
+
         training = self.model.fit( x = x, 
                                    y = y, 
                                    batch_size = batch_size, 
@@ -82,69 +78,67 @@ class Classifier:
                                    validation_data = validation_data ,
                                    callbacks = callbacks
                                 )
+
         return training
+
     def baseModelParamsCount(self):
+
+        """Returns count of parametrs in pre-traind model."""
+
         return self.base_model.count_params()
 
     def baseModelLayersCount(self):
+
+        """Returns count of layers in pre-traind model."""
+
         return len(self.base_model.layers)
 
 
     def setTrainable (self, trainable = False):
+
+        """Sets pre-traind models' layers in training mode if trainable is True. Otherwise infrance mode."""
+
         self.base_model.trainable = trainable
     
 
-
-    def unfreazeOddLayers(self): 
-        index = 0   
-        for layer in self.base_model.layers:
-            if index % 2 == 0:
-                layer.trainable = True
-            index = index + 1 
-
     def unfreazeLastLayers(self, num = 10): 
-        
-        '''
-        Lower layers refer to general features (problem independent)
-        higher layers refer to specific features (problem dependent)
 
-        '''
+        """Sets pre-traind models' last layers in training mode with corsponding number.""" 
+
+       # Lower layers refer to general features (problem independent)
+       # higher layers refer to specific features (problem dependent)
+
         for layer in self.base_model.layers[len(self.base_model.layers) - num : ]:
             layer.trainable = True
 
 
 
     def summary(self):
+
+        """Returns the summary of the structure of the model.""" 
+
         return self.model.summary(expand_nested = True,
                                  show_trainable = True)
 
 
-    def save(self, path = "Model"):
+    def save(self, path = None):
+
+        """ Save the model. """ 
+
         self.model.save(path)
         print("Model is succesfuly saved in ", path, ".")
 
-    def evaluate(self, data,   batch_size = 16):
-       self.model.evaluate( data) # use_multiprocessing = True
+    def evaluate(self, data):
+
+        """ Evaluate the data. """
+
+        return self.model.evaluate(data, batch_size = 16, verbose = 1, return_dict = True)
      
-
-    
-
-
-    
-  
-        
-
 
 
 def kerasModelNames():
-        return  [m[0] for m in inspect.getmembers(applications, inspect.isfunction)]
 
+    """ Returns the Names of  all Keras aplication names."""
 
-    
-
-
-
-
-    
-
+    return  [m[0] for m in inspect.getmembers(applications, inspect.isfunction)]
 
