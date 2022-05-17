@@ -20,8 +20,8 @@ trainMask = True
 valMask = trainMask
 
 
-trainM = 18 #86744
-valM = 18  #10954
+trainM = 86744
+valM = 10954
 
 # # training
 # unfreezeedLayersTraining = 10 # 10 from pre-traind model + classification layer
@@ -30,7 +30,7 @@ valM = 18  #10954
 
 # tuning
 learningRateFineTuning = 1e-7
-epochsFineTuning = 1 #30
+epochsFineTuning = 30
 
 
 
