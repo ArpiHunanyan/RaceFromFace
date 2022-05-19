@@ -8,8 +8,7 @@ from tqdm import tqdm
 from  DataPreparation import getValidation, getTrain
 from Model import kerasModelNames, Classifier
 
-import matplotlib.pyplot as plt
-from  Visualisation import Plot
+
 
 
 
@@ -21,8 +20,8 @@ model_names = kerasModelNames()
 
 
 # Download the training and validation data
-train_data =  getTrain(18)
-validation_data =  getValidation(18)
+train_data =  getTrain(86744)
+validation_data =  getValidation(10954)
 
 # Number of training examples and labels
 batch_size = 16
@@ -79,7 +78,4 @@ benchmark_df = pd.DataFrame(model_benchmarks)
 benchmark_df.sort_values(['validation_accuracy', 'val_recall', 'val_specificity_at_sensitivity'], inplace = True)
 benchmark_df.to_csv('benchmark_df.csv', index = False)
 
-#plot = Plot()
-# plot.parameterBar()
-# plot.metricBar()
-#plot.scaterplotWithParameters()
+
