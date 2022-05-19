@@ -15,6 +15,7 @@ import inspect
 
 
 
+
 class Classifier:
 
 
@@ -107,7 +108,9 @@ class Classifier:
 
        # Lower layers refer to general features (problem independent)
        # higher layers refer to specific features (problem dependent)
-
+        if (num == 0):
+            return
+            
         for layer in self.base_model.layers[len(self.base_model.layers) - num : ]:
             layer.trainable = True
 
