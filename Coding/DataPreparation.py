@@ -2,9 +2,13 @@
 # Created: 29 April,2022, 14:58 PM
 # Email: arpi_hunanyan@edu.aua.am
 
+import os
+import sys
 import pandas as pd
 import re
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
+import warnings
+warnings.filterwarnings('ignore')
 from sklearn.preprocessing import OneHotEncoder
 
 import numpy as np
@@ -44,6 +48,7 @@ def getOutput(path, M, masked):
 
 
     # DataFrameIterator
+    sys.stdout = open(os.devnull, 'w')
     data = ImageDataGenerator().flow_from_dataframe(dataframe = dataframe,  
                                                     directory = 'Data',
                                                     x_col = file, 
@@ -51,6 +56,9 @@ def getOutput(path, M, masked):
                                                     batch_size = 16,
                                                     target_size = (224, 224),
                                                     class_mode = 'raw')
+
+    sys.stdout = sys.__stdout__
+
 
     return data
 
