@@ -1,3 +1,8 @@
+# Author: ArpiHunanyan
+# Created: 18 May, 2022
+# Email: arpi_hunanyan@edu.aua.am
+
+
 import sys
 from ResultInterpretation import Selection, Execution
 
