@@ -66,7 +66,6 @@ print("Training Configuration")
 
 print("How many of the top layes should be in training mode? ")
 unfreezeedLayersTraining = int(input())
-print(unfreezeedLayersTraining)
 print("Enter the learning rate ")
 
 learningRateTrainig = float(input())
